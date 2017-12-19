@@ -1,23 +1,26 @@
 <template>
   <div>
-    <section>
-      <book-list :books="latestUpdated" heading="最新更新" @onBookSelect="preview($event)"></book-list>
-    </section>
-    <section>
-      <book-list :books="latestUpdated" heading="编辑推荐"></book-list>
-    </section>
-    <modal-dialog ref="dialog" @dialogClose="selected=undefined">
-      <div slot="header">
-        <div class="dismiss" @click.prevent="$refs.dialog.close()"></div>
+    <div class="section">
+    <slider :slides="top"></slider>
+      <div class="announcement">
+        <label>快讯</label>
+        <span>{{announcement.text}}</span>
       </div>
-      <div><img :src="selected.img_url"></div>
-      <div>{{selected.title}}</div>
-    </modal-dialog>
+    </div>
+    <div class="section">
+      <book-list :books="promotions" heading="最新更新" @onBookSelect="preview($event)"></book-list>
+    </div>
+    <div class="section">
+      <book-list :books="recommended" heading="编辑推荐"></book-list>
+    </div>
+
   </div>
+
 </template>
 
 <script>
   import BookList from './components/BookList.vue'
+  import Slider from './components/Slider.vue'
   import ModalDialog from './components/dialog.vue'
   import faker from './fixtures/faker'
 
@@ -39,6 +42,7 @@
       }
     },
     components: {
+      Slider,
       BookList,
       ModalDialog
     },
@@ -58,15 +62,26 @@
             console.log(`${error}`)
           })
       }
-      this.$http.get('/home').then(res => {
-        this.announcement = res.body.announcement
-        this.sliders = res.body.sliders
-        this.latestUpdated = res.body.latestUpdated
-        this.recommended = res.body.recommended
-      })
     }
   }
 </script>
 
 <style>
+  .announcement {
+    font-size: 12px;
+    padding:5px;
+    background:#fff;
+  }
+  .announcement > label {
+    padding: 3px 10px;
+    margin: 3px 10px;
+    background: #FACCB7;
+    border-radius: 3px;
+    color: #FF5102;
+  }
+  .announcement > span {
+    padding: 3px 10px;
+    color: #333;
+    display:inline-block;
+  }
 </style>

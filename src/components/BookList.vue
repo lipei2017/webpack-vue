@@ -1,5 +1,4 @@
 <template>
-  <section>
     <div class="book-list">
       <div class="header">
         <div class="heading">{{heading}}</div>
@@ -16,7 +15,6 @@
         </div>
       </div>
     </div>
-  </section>
 </template>
 
 <script>
