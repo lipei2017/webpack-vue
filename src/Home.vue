@@ -1,71 +1,34 @@
 <template>
-  <div>
+  <div v-if="page_data">
     <div class="section">
-    <slider :slides="top"></slider>
+      <!--<slider :slides="page_data.top"></slider>-->
       <div class="announcement">
         <label>快讯</label>
-        <span>{{announcement.text}}</span>
+        <span>今日上架的图书全部8折</span>
       </div>
     </div>
     <div class="section">
-      <book-list :books="promotions" heading="最新更新" @onBookSelect="preview($event)"></book-list>
+      <book-list :books="page_data.promotions"
+                 heading="最新更新"
+                 @select="preview($event)">
+      </book-list>
     </div>
     <div class="section">
-      <book-list :books="recommended" heading="编辑推荐"></book-list>
+      <book-list :books="page_data.recommended"
+                 heading="编辑推荐">
+      </book-list>
     </div>
 
+    <modal-dialog ref="dialog">
+      <div slot="heading"></div>
+      <div>
+        <div v-if="selected">
+          <h2>{{ selected.title }}</h2>
+        </div>
+      </div>
+    </modal-dialog>
   </div>
-
 </template>
-
-<script>
-  import BookList from './components/BookList.vue'
-  import Slider from './components/Slider.vue'
-  import ModalDialog from './components/dialog.vue'
-  import faker from './fixtures/faker'
-
-  const debug = process.env.NODE_ENV !== 'production'
-
-  export default {
-    data () {
-      return {
-        announcement: '',
-        sliders: [],
-        latestUpdated: [],
-        recommended: []
-      }
-    },
-    methods: {
-      preview (book) {
-        this.selected = book
-        this.$refs.dialog.open()
-      }
-    },
-    components: {
-      Slider,
-      BookList,
-      ModalDialog
-    },
-    created () {
-      if (debug) {
-        const fakeData = faker.getHomeData()
-        for (let prop in fakeData) {
-          this[prop] = fakeData[prop]
-        }
-      } else {
-        this.$http.get('/home')
-          .then((res) => {
-            for (let prop in res.body) {
-              this[prop] = res.body[prop]
-            }
-          }, (error) => {
-            console.log(`${error}`)
-          })
-      }
-    }
-  }
-</script>
-
 <style>
   .announcement {
     font-size: 12px;
@@ -85,3 +48,35 @@
     display:inline-block;
   }
 </style>
+<script type="text/ecmascript-6">
+  //import Slider from "./components/slider.vue"
+  import BookList from "./books/list.vue"
+  import ModalDialog from "./components/dialog.vue"
+  import faker from "./fixtures/faker"
+  export default{
+    data () {
+      return {
+        page_data: undefined,
+        selected:undefined
+      }
+    },
+    mounted(){
+      document.title = "Book store"
+    },
+    created() {
+      this.page_data = faker.getHomeData()
+//            this.$http.get('/books/promotions', (res)=> {
+//                this.page_data = res.data
+//            }, (error)=> {
+//                // 处理出错信息
+//            })
+    },
+    components: {BookList,ModalDialog},
+    methods: {
+      preview (book) {
+        this.selected = book
+        this.$refs.dialog.open()
+      }
+    }
+  }
+</script>

@@ -1,18 +1,18 @@
 <template>
-  <div class="dialog-wrapper" :class="{'open': is_open}">
+  <div class="dialog-wrapper"
+       :class="{'open':is_open}">
     <div class="overlay" @click="close"></div>
     <div class="dialog">
-      <div>
-        <slot name="header"></slot>
+      <div class="heading">
+        <slot name="heading"></slot>
       </div>
-        <slot></slot>
+      <slot></slot>
     </div>
   </div>
 </template>
-<style>
-</style>
+
 <script>
-  import './dialog.less'
+  import "./dialog.less"
   export default {
     data () {
       return {
@@ -20,17 +20,13 @@
       }
     },
     methods: {
-      open () {
-        if (!this.is_open) {
-          this.$emit('dialogOpen')
-        }
+      open() {
         this.is_open = true
+        this.$emit('dialogopen')
       },
-      close () {
-        if (this.is_open) {
-          this.$emit('dialogClose')
-        }
+      close() {
         this.is_open = false
+        this.$emit('dialogclose')
       }
     }
   }
